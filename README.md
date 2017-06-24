@@ -34,9 +34,10 @@ startup code.
 3. The FIR filter code is placed in the bss2 section by modifying
 ./Drivers/CMSIS/Include/arm_math.h:
 
+```c++
     void arm_fir_f32(
       const arm_fir_instance_f32 * S,
       float32_t * pSrc,
       float32_t * pDst,
       uint32_t blockSize) __attribute__((section(".bss2")));
-
+```
