@@ -2,7 +2,6 @@ stm32l452ceu6 demo
 ====
 
 Demo program to show problem with STM32L452CEU6 running code in SRAM2.
-
 ====
 
 This is an Eclipse project generated via STM32CubeMX.  It uses FreeRTOS to 
@@ -24,7 +23,6 @@ on the same PCB this was tested with using an STM32L433CCU6 chip.  The code
 will run indefinitely when the FIR filter code is placed in Flash.
 
 Placing Code in SRAM2
-
 ====
 
 1. The section "bss2" (yes, poorly named) is defined in the
