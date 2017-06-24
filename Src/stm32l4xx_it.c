@@ -43,11 +43,8 @@
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
 extern DMA_HandleTypeDef hdma_adc1;
-extern DMA_HandleTypeDef hdma_dac_ch1;
 extern DMA_HandleTypeDef hdma_lpuart_tx;
 extern UART_HandleTypeDef hlpuart1;
-extern DMA_HandleTypeDef hdma_spi1_rx;
-extern DMA_HandleTypeDef hdma_spi1_tx;
 
 extern TIM_HandleTypeDef htim1;
 
@@ -76,7 +73,6 @@ void HardFault_Handler(void)
   /* USER CODE BEGIN HardFault_IRQn 0 */
   GPIOB->BSRR = GPIO_PIN_5;
   GPIOA->BRR = GPIO_PIN_15;
-  /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
     int eh_counter;
@@ -88,6 +84,10 @@ void HardFault_Handler(void)
       asm volatile("nop");
     }
     GPIOB->BSRR = GPIO_PIN_4;
+  }
+  /* USER CODE END HardFault_IRQn 0 */
+  while (1)
+  {
   }
   /* USER CODE BEGIN HardFault_IRQn 1 */
 
@@ -134,7 +134,6 @@ void UsageFault_Handler(void)
   /* USER CODE BEGIN UsageFault_IRQn 0 */
   GPIOB->BSRR = GPIO_PIN_5;
   GPIOA->BRR = GPIO_PIN_15;
-  /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {
     int eh_counter;
@@ -146,6 +145,10 @@ void UsageFault_Handler(void)
       asm volatile("nop");
     }
     GPIOB->BSRR = GPIO_PIN_4;
+  }
+  /* USER CODE END UsageFault_IRQn 0 */
+  while (1)
+  {
   }
   /* USER CODE BEGIN UsageFault_IRQn 1 */
 
@@ -257,34 +260,6 @@ void DMA1_Channel1_IRQHandler(void)
 }
 
 /**
-* @brief This function handles DMA1 channel2 global interrupt.
-*/
-void DMA1_Channel2_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi1_rx);
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 1 */
-}
-
-/**
-* @brief This function handles DMA1 channel3 global interrupt.
-*/
-void DMA1_Channel3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_dac_ch1);
-  /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel3_IRQn 1 */
-}
-
-/**
 * @brief This function handles TIM1 update interrupt and TIM16 global interrupt.
 */
 void TIM1_UP_TIM16_IRQHandler(void)
@@ -296,20 +271,6 @@ void TIM1_UP_TIM16_IRQHandler(void)
   /* USER CODE BEGIN TIM1_UP_TIM16_IRQn 1 */
 
   /* USER CODE END TIM1_UP_TIM16_IRQn 1 */
-}
-
-/**
-* @brief This function handles DMA2 channel4 global interrupt.
-*/
-void DMA2_Channel4_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Channel4_IRQn 0 */
-
-  /* USER CODE END DMA2_Channel4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi1_tx);
-  /* USER CODE BEGIN DMA2_Channel4_IRQn 1 */
-
-  /* USER CODE END DMA2_Channel4_IRQn 1 */
 }
 
 /**
