@@ -2,6 +2,8 @@ stm32l452ceu6 demo
 ====
 
 Demo program to show problem with STM32L452CEU6 running code in SRAM2.
+
+Overview
 ====
 
 This is an Eclipse project generated via STM32CubeMX.  It uses FreeRTOS to 
