@@ -55,16 +55,12 @@
 #define POWER_BUTTON_GPIO_Port GPIOA
 #define AUDIO_IN_Pin GPIO_PIN_0
 #define AUDIO_IN_GPIO_Port GPIOB
-#define VGND_IN_Pin GPIO_PIN_1
-#define VGND_IN_GPIO_Port GPIOB
 #define VDD_EN_Pin GPIO_PIN_9
 #define VDD_EN_GPIO_Port GPIOA
 #define USB_CE_Pin GPIO_PIN_10
 #define USB_CE_GPIO_Port GPIOA
 #define BOOT_BUTTON_Pin GPIO_PIN_3
 #define BOOT_BUTTON_GPIO_Port GPIOH
-#define CS_POT_Pin GPIO_PIN_8
-#define CS_POT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

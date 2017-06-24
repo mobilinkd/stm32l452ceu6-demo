@@ -41,10 +41,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern PCD_HandleTypeDef hpcd_USB_FS;
 extern DMA_HandleTypeDef hdma_adc1;
-extern DMA_HandleTypeDef hdma_lpuart_tx;
-extern UART_HandleTypeDef hlpuart1;
 
 extern TIM_HandleTypeDef htim1;
 
@@ -271,48 +268,6 @@ void TIM1_UP_TIM16_IRQHandler(void)
   /* USER CODE BEGIN TIM1_UP_TIM16_IRQn 1 */
 
   /* USER CODE END TIM1_UP_TIM16_IRQn 1 */
-}
-
-/**
-* @brief This function handles USB event interrupt through EXTI line 17.
-*/
-void USB_IRQHandler(void)
-{
-  /* USER CODE BEGIN USB_IRQn 0 */
-
-  /* USER CODE END USB_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_FS);
-  /* USER CODE BEGIN USB_IRQn 1 */
-
-  /* USER CODE END USB_IRQn 1 */
-}
-
-/**
-* @brief This function handles DMA2 channel6 global interrupt.
-*/
-void DMA2_Channel6_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Channel6_IRQn 0 */
-
-  /* USER CODE END DMA2_Channel6_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_lpuart_tx);
-  /* USER CODE BEGIN DMA2_Channel6_IRQn 1 */
-
-  /* USER CODE END DMA2_Channel6_IRQn 1 */
-}
-
-/**
-* @brief This function handles LPUART1 global interrupt.
-*/
-void LPUART1_IRQHandler(void)
-{
-  /* USER CODE BEGIN LPUART1_IRQn 0 */
-
-  /* USER CODE END LPUART1_IRQn 0 */
-  HAL_UART_IRQHandler(&hlpuart1);
-  /* USER CODE BEGIN LPUART1_IRQn 1 */
-
-  /* USER CODE END LPUART1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
