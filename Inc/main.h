@@ -53,6 +53,7 @@
 
 #define POWER_BUTTON_Pin GPIO_PIN_0
 #define POWER_BUTTON_GPIO_Port GPIOA
+#define POWER_BUTTON_EXTI_IRQn EXTI0_IRQn
 #define AUDIO_IN_Pin GPIO_PIN_0
 #define AUDIO_IN_GPIO_Port GPIOB
 #define VDD_EN_Pin GPIO_PIN_9
@@ -61,6 +62,7 @@
 #define USB_CE_GPIO_Port GPIOA
 #define BOOT_BUTTON_Pin GPIO_PIN_3
 #define BOOT_BUTTON_GPIO_Port GPIOH
+#define BOOT_BUTTON_EXTI_IRQn EXTI3_IRQn
 
 /* USER CODE BEGIN Private defines */
 
