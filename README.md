@@ -33,8 +33,8 @@ Placing Code in SRAM2
 
 1. The section "bss2" (yes, poorly named) is defined in the
 STM32L452CE_FLASH.ld linker script.
-2. Code and data is copied to SRAM2 by the ./Src/startup_stm32l452xx.S
-startup code.
+2. Code and data in bss2 is copied to SRAM2 by the
+./Src/startup_stm32l452xx.S startup code.
 3. The FIR filter code is placed in the bss2 section by modifying
 ./Drivers/CMSIS/Include/arm_math.h:
 
