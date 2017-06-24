@@ -84,46 +84,12 @@ WWDG_HandleTypeDef hwwdg;
 osThreadId defaultTaskHandle;
 uint32_t defaultTaskBuffer[ 256 ];
 osStaticThreadDef_t defaultTaskControlBlock;
-osThreadId ioEventTaskHandle;
-uint32_t ioEventTaskBuffer[ 384 ];
-osStaticThreadDef_t ioEventTaskControlBlock;
-osThreadId cdcBlinkerHandle;
-uint32_t cdcBlinkerBuffer[ 128 ];
-osStaticThreadDef_t cdcBlinkerControlBlock;
 osThreadId audioInputTaskHandle;
 uint32_t audioInputTaskBuffer[ 512 ];
 osStaticThreadDef_t audioInputTaskControlBlock;
-osThreadId modulatorTaskHandle;
-uint32_t modulatorTaskBuffer[ 384 ];
-osStaticThreadDef_t modulatorTaskControlBlock;
-osMessageQId ioEventQueueHandle;
-uint8_t ioEventQueueBuffer[ 16 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t ioEventQueueControlBlock;
-osMessageQId serialInputQueueHandle;
-uint8_t serialInputQueueBuffer[ 16 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t serialInputQueueControlBlock;
-osMessageQId serialOutputQueueHandle;
-uint8_t serialOutputQueueBuffer[ 16 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t serialOutputQueueControlBlock;
-osMessageQId audioInputQueueHandle;
-uint8_t audioInputQueueBuffer[ 8 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t audioInputQueueControlBlock;
-osMessageQId hdlcInputQueueHandle;
-uint8_t hdlcInputQueueBuffer[ 3 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t hdlcInputQueueControlBlock;
-osMessageQId hdlcOutputQueueHandle;
-uint8_t hdlcOutputQueueBuffer[ 3 * sizeof( uint32_t ) ];
-osStaticMessageQDef_t hdlcOutputQueueControlBlock;
-osMessageQId dacOutputQueueHandle;
-uint8_t dacOutputQueueBuffer[ 128 * sizeof( uint8_t ) ];
-osStaticMessageQDef_t dacOutputQueueControlBlock;
 osMessageQId adcInputQueueHandle;
 uint8_t adcInputQueueBuffer[ 3 * sizeof( uint32_t ) ];
 osStaticMessageQDef_t adcInputQueueControlBlock;
-osTimerId beaconTimer1Handle;
-osTimerId beaconTimer2Handle;
-osTimerId beaconTimer3Handle;
-osTimerId beaconTimer4Handle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -282,16 +248,12 @@ static void MX_TIM6_Init(void);
 static void MX_CRC_Init(void);
 static void MX_TIM2_Init(void);
 void startDefaultTask(void const * argument);
-extern void startIOEventTask(void const * argument);
-extern void startCdcBlinker(void const * argument);
 extern void startAudioInputTask(void const * argument);
-extern void startModulatorTask(void const * argument);
-extern void beacon(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 void startADC(void);
-float* filter(int16_t* input) __attribute__((section(".bss2")));
+float* filter(int16_t* input);
 
 /* USER CODE END PFP */
 
@@ -401,23 +363,6 @@ int main(void)
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
-  /* Create the timer(s) */
-  /* definition and creation of beaconTimer1 */
-  osTimerDef(beaconTimer1, beacon);
-  beaconTimer1Handle = osTimerCreate(osTimer(beaconTimer1), osTimerPeriodic, NULL);
-
-  /* definition and creation of beaconTimer2 */
-  osTimerDef(beaconTimer2, beacon);
-  beaconTimer2Handle = osTimerCreate(osTimer(beaconTimer2), osTimerPeriodic, NULL);
-
-  /* definition and creation of beaconTimer3 */
-  osTimerDef(beaconTimer3, beacon);
-  beaconTimer3Handle = osTimerCreate(osTimer(beaconTimer3), osTimerPeriodic, NULL);
-
-  /* definition and creation of beaconTimer4 */
-  osTimerDef(beaconTimer4, beacon);
-  beaconTimer4Handle = osTimerCreate(osTimer(beaconTimer4), osTimerPeriodic, NULL);
-
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
@@ -427,55 +372,15 @@ int main(void)
   osThreadStaticDef(defaultTask, startDefaultTask, osPriorityIdle, 0, 256, defaultTaskBuffer, &defaultTaskControlBlock);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of ioEventTask */
-  osThreadStaticDef(ioEventTask, startIOEventTask, osPriorityLow, 0, 384, ioEventTaskBuffer, &ioEventTaskControlBlock);
-  ioEventTaskHandle = osThreadCreate(osThread(ioEventTask), NULL);
-
-  /* definition and creation of cdcBlinker */
-  osThreadStaticDef(cdcBlinker, startCdcBlinker, osPriorityIdle, 0, 128, cdcBlinkerBuffer, &cdcBlinkerControlBlock);
-  cdcBlinkerHandle = osThreadCreate(osThread(cdcBlinker), NULL);
-
   /* definition and creation of audioInputTask */
   osThreadStaticDef(audioInputTask, startAudioInputTask, osPriorityAboveNormal, 0, 512, audioInputTaskBuffer, &audioInputTaskControlBlock);
   audioInputTaskHandle = osThreadCreate(osThread(audioInputTask), NULL);
-
-  /* definition and creation of modulatorTask */
-  osThreadStaticDef(modulatorTask, startModulatorTask, osPriorityAboveNormal, 0, 384, modulatorTaskBuffer, &modulatorTaskControlBlock);
-  modulatorTaskHandle = osThreadCreate(osThread(modulatorTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
   /* Create the queue(s) */
-  /* definition and creation of ioEventQueue */
-  osMessageQStaticDef(ioEventQueue, 16, uint32_t, ioEventQueueBuffer, &ioEventQueueControlBlock);
-  ioEventQueueHandle = osMessageCreate(osMessageQ(ioEventQueue), NULL);
-
-  /* definition and creation of serialInputQueue */
-  osMessageQStaticDef(serialInputQueue, 16, uint32_t, serialInputQueueBuffer, &serialInputQueueControlBlock);
-  serialInputQueueHandle = osMessageCreate(osMessageQ(serialInputQueue), NULL);
-
-  /* definition and creation of serialOutputQueue */
-  osMessageQStaticDef(serialOutputQueue, 16, uint32_t, serialOutputQueueBuffer, &serialOutputQueueControlBlock);
-  serialOutputQueueHandle = osMessageCreate(osMessageQ(serialOutputQueue), NULL);
-
-  /* definition and creation of audioInputQueue */
-  osMessageQStaticDef(audioInputQueue, 4, uint8_t, audioInputQueueBuffer, &audioInputQueueControlBlock);
-  audioInputQueueHandle = osMessageCreate(osMessageQ(audioInputQueue), NULL);
-
-  /* definition and creation of hdlcInputQueue */
-  osMessageQStaticDef(hdlcInputQueue, 3, uint32_t, hdlcInputQueueBuffer, &hdlcInputQueueControlBlock);
-  hdlcInputQueueHandle = osMessageCreate(osMessageQ(hdlcInputQueue), NULL);
-
-  /* definition and creation of hdlcOutputQueue */
-  osMessageQStaticDef(hdlcOutputQueue, 3, uint32_t, hdlcOutputQueueBuffer, &hdlcOutputQueueControlBlock);
-  hdlcOutputQueueHandle = osMessageCreate(osMessageQ(hdlcOutputQueue), NULL);
-
-  /* definition and creation of dacOutputQueue */
-  osMessageQStaticDef(dacOutputQueue, 128, uint8_t, dacOutputQueueBuffer, &dacOutputQueueControlBlock);
-  dacOutputQueueHandle = osMessageCreate(osMessageQ(dacOutputQueue), NULL);
-
   /* definition and creation of adcInputQueue */
   osMessageQStaticDef(adcInputQueue, 3, uint32_t, adcInputQueueBuffer, &adcInputQueueControlBlock);
   adcInputQueueHandle = osMessageCreate(osMessageQ(adcInputQueue), NULL);
@@ -1033,19 +938,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void startIOEventTask(void const * argument)
-{
-  while (1) {
-    osEvent event = osMessageGet(ioEventQueueHandle, osWaitForever);
-  }
-}
-
-void startCdcBlinker(void const * argument)
-{
-  while (1) {
-    osEvent event = osMessageGet(serialOutputQueueHandle, osWaitForever);
-  }
-}
 
 void startAudioInputTask(void const * argument)
 {
@@ -1063,17 +955,6 @@ void startAudioInputTask(void const * argument)
   }
 }
 
-void startModulatorTask(void const * argument)
-{
-  while (1) {
-    osEvent event = osMessageGet(hdlcOutputQueueHandle, osWaitForever);
-  }
-}
-
-void beacon(void const * argument)
-{
-  osDelay(osWaitForever);
-}
 /* USER CODE END 4 */
 
 /* startDefaultTask function */
